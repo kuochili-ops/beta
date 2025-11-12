@@ -12,9 +12,9 @@ if uploaded_file is not None:
     # 使用者輸入主成分
     keyword = st.text_input("請輸入主成分")
 
-    if keyword:
+   if keyword:
     # 篩選藥品名稱中包含主成分的項目
-       result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
+        result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
 
     # 依完整藥品名稱分組加總
     summary = result.groupby("藥品名稱", as_index=False)["數量"].sum()
@@ -35,6 +35,7 @@ if uploaded_file is not None:
             file_name="查詢結果.csv",
             mime="text/csv",
         )
+
 
 
 
