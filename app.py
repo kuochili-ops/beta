@@ -3,33 +3,32 @@ import pandas as pd
 
 st.title("2024 健保申報藥品數量查詢介面（正式版）")
 
-# 檔案上傳
 uploaded_file = st.file_uploader("請上傳藥品資料 CSV", type="csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file, encoding="utf-8")
 
-    # 使用者輸入主成分
     keyword = st.text_input("請輸入主成分")
 
     if keyword:
-    # 篩選藥品名稱中包含主成分的項目
-    result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
+        # 篩選藥品名稱中包含主成分的項目
+        result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
 
-    # 依藥品代碼 + 藥品名稱分組加總
-    summary = result.groupby(["藥品代碼", "藥品名稱"], as_index=False)["數量"].sum()
-    summary.rename(columns={"數量": "總量"}, inplace=True)
+        # 依藥品代碼 + 藥品名稱分組加總
+        summary = result.groupby(["藥品代碼", "藥品名稱"], as_index=False)["數量"].sum()
+        summary.rename(columns={"數量": "總量"}, inplace=True)
 
-    st.write("查詢結果：")
-    st.dataframe(summary)
+        st.write("查詢結果：")
+        st.dataframe(summary)
 
-    # 顯示每種規格的總量
-    for code, name, amount in zip(summary["藥品代碼"], summary["藥品名稱"], summary["總量"]):
-        st.write(f"💊 代碼 `{code}`，藥品 `{name}` 的使用總量為：**{amount:,}**")
+        # 顯示每種規格的總量
+        for code, name, amount in zip(summary["藥品代碼"], summary["藥品名稱"], summary["總量"]):
+            st.write(f"💊 代碼 `{code}`，藥品 `{name}` 的使用總量為：**{amount:,}**")
 
-    # 顯示所有規格合計
-    total_amount = summary["總量"].sum()
-    st.write(f"📊 主成分『{keyword}』的所有規格總使用量為：**{total_amount:,}**")
+        # 顯示所有規格合計
+        total_amount = summary["總量"].sum()
+        st.write(f"📊 主成分『{keyword}』的所有規格總使用量為：**{total_amount:,}**")
+
 
 
         # 提供下載功能
@@ -40,6 +39,7 @@ if uploaded_file is not None:
             file_name="查詢結果.csv",
             mime="text/csv",
         )
+
 
 
 
