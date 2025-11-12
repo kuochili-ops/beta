@@ -13,19 +13,20 @@ if uploaded_file is not None:
     keyword = st.text_input("請輸入主成分")
 
    if keyword:
-       # 篩選藥品名稱中包含主成分的項目
-       result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
+    # 篩選藥品名稱中包含主成分的項目
+    result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
 
-       # 依完整藥品名稱分組加總
-       summary = result.groupby("藥品名稱", as_index=False)["數量"].sum()
-       summary.rename(columns={"數量": "總量"}, inplace=True)
+    # 依完整藥品名稱分組加總
+    summary = result.groupby("藥品名稱", as_index=False)["數量"].sum()
+    summary.rename(columns={"數量": "總量"}, inplace=True)
 
-       st.write("查詢結果：")
-       st.dataframe(summary)
+    st.write("查詢結果：")
+    st.dataframe(summary)
 
-       # 顯示每種規格的總量
-       for name, amount in zip(summary["藥品名稱"], summary["總量"]):
-           st.write(f"💊 `{name}` 的使用總量為：**{amount:,}**")
+    # 顯示每種規格的總量
+    for name, amount in zip(summary["藥品名稱"], summary["總量"]):
+        st.write(f"💊 `{name}` 的使用總量為：**{amount:,}**")
+
 
         # 提供下載功能
         csv = summary.to_csv(index=False, encoding="utf-8-sig")
@@ -35,6 +36,7 @@ if uploaded_file is not None:
             file_name="查詢結果.csv",
             mime="text/csv",
         )
+
 
 
 
