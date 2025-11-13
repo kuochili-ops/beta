@@ -14,25 +14,25 @@ if uploaded_file is not None:
         # 篩選藥品名稱中包含主成分的項目
         result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
 
-        # 依藥品代碼 + 藥品名稱分組加總
-        summary = result.groupby(["藥品代碼", "藥品名稱"], as_index=False)["數量"].sum()
-        summary.rename(columns={"數量": "使用總量"}, inplace=True)
+        # 依藥品名稱加總（不同代碼合併）
+        summary = result.groupby("藥品名稱", as_index=False)["數量"].sum()
+        summary.rename(columns={"數量": "累計總量"}, inplace=True)
 
         # 數字格式化：小數點後一位
-        summary["使用總量"] = summary["使用總量"].round(1)
+        summary["累計總量"] = summary["累計總量"].round(1)
 
         # 加上序號欄位，從 1 開始
         summary.insert(0, "序號", range(1, len(summary) + 1))
 
-        st.write("查詢結果：")
+        st.write("查詢結果（累計總量）：")
         st.dataframe(summary)
 
-        # 顯示每種規格的總量
-        for code, name, amount in zip(summary["藥品代碼"], summary["藥品名稱"], summary["使用總量"]):
-            st.write(f"💊 代碼 `{code}`，藥品 `{name}` 的使用總量為：**{amount:,.1f}**")
+        # 顯示每種規格的累計總量
+        for name, amount in zip(summary["藥品名稱"], summary["累計總量"]):
+            st.write(f"💊 `{name}` 的累計總量為：**{amount:,.1f}**")
 
         # 顯示所有規格合計
-        total_amount = summary["使用總量"].sum()
+        total_amount = summary["累計總量"].sum()
         st.write(f"📊 主成分『{keyword}』的所有規格總使用量為：**{total_amount:,.1f}**")
 
         # 提供下載功能
