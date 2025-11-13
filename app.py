@@ -34,8 +34,8 @@ if uploaded_file is not None:
         st.dataframe(summary)
 
         # 顯示每種規格的累計總量
-        for name, amount in zip(summary["藥品名稱"], summary["累計總量"]):
-            st.write(f"💊 `{name}` 的累計總量為：**{amount:,.1f}**")
+        #for name, amount in zip(summary["藥品名稱"], summary["累計總量"]):
+        #    st.write(f"💊 `{name}` 的累計總量為：**{amount:,.1f}**")
 
         # 顯示所有規格合計
         total_amount = summary["累計總量"].sum()
@@ -49,3 +49,4 @@ if uploaded_file is not None:
             file_name="累計查詢結果.csv",
             mime="text/csv",
         )
+
