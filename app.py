@@ -14,17 +14,23 @@ if uploaded_file is not None:
         # 篩選藥品名稱中包含主成分的項目
         result = df[df["藥品名稱"].str.contains(keyword, case=False, na=False)]
 
-        # 依藥品名稱加總（不同代碼合併）
-        summary = result.groupby("藥品名稱", as_index=False)["數量"].sum()
-        summary.rename(columns={"數量": "累計總量"}, inplace=True)
+        # 數字格式化：使用量保留一位小數
+        result["使用量"] = result["數量"].round(1)
 
-        # 數字格式化：小數點後一位
+        # 🔴 顯示逐筆明細表格（含代碼）
+        detail = result[["藥品代碼", "藥品名稱", "使用量"]].copy()
+        detail.insert(0, "序號", range(1, len(detail) + 1))
+
+        st.write("🔴 查詢結果（逐筆明細）：")
+        st.dataframe(detail)
+
+        # ✅ 顯示加總表格（依藥品名稱）
+        summary = result.groupby("藥品名稱", as_index=False)["使用量"].sum()
+        summary.rename(columns={"使用量": "累計總量"}, inplace=True)
         summary["累計總量"] = summary["累計總量"].round(1)
-
-        # 加上序號欄位，從 1 開始
         summary.insert(0, "序號", range(1, len(summary) + 1))
 
-        st.write("查詢結果（累計總量）：")
+        st.write("✅ 查詢結果（藥品名稱累計）：")
         st.dataframe(summary)
 
         # 顯示每種規格的累計總量
@@ -38,8 +44,8 @@ if uploaded_file is not None:
         # 提供下載功能
         csv = summary.to_csv(index=False, encoding="utf-8-sig")
         st.download_button(
-            label="下載查詢結果 CSV",
+            label="下載累計查詢結果 CSV",
             data=csv,
-            file_name="查詢結果.csv",
+            file_name="累計查詢結果.csv",
             mime="text/csv",
         )
