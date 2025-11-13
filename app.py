@@ -24,14 +24,17 @@ if uploaded_file is not None:
         st.write("🔴 查詢結果（逐筆明細）：")
         st.dataframe(detail)
 
-        # ✅ 顯示加總表格（依藥品名稱）
+       # 加總：依藥品名稱分組
         summary = result.groupby("藥品名稱", as_index=False)["使用量"].sum()
         summary.rename(columns={"使用量": "累計總量"}, inplace=True)
         summary["累計總量"] = summary["累計總量"].round(1)
+
+        # 加入序號欄位，從 1 開始
         summary.insert(0, "序號", range(1, len(summary) + 1))
 
+        # ✅ 把「序號」設為索引，避免多出一欄
         st.write("✅ 查詢結果（藥品名稱累計）：")
-        st.dataframe(summary)
+        st.dataframe(summary.set_index("序號"))
 
         # 顯示每種規格的累計總量
         #for name, amount in zip(summary["藥品名稱"], summary["累計總量"]):
@@ -49,4 +52,5 @@ if uploaded_file is not None:
             file_name="累計查詢結果.csv",
             mime="text/csv",
         )
+
 
