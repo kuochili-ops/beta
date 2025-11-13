@@ -3,11 +3,13 @@ import pandas as pd
 
 st.title("2024 健保申報藥品數量查詢介面（正式版）")
 
+# 檔案上傳
 uploaded_file = st.file_uploader("請上傳藥品資料 CSV", type="csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file, encoding="utf-8")
 
+    # 使用者輸入主成分
     keyword = st.text_input("請輸入主成分")
 
     if keyword:
@@ -29,8 +31,6 @@ if uploaded_file is not None:
         total_amount = summary["總量"].sum()
         st.write(f"📊 主成分『{keyword}』的所有規格總使用量為：**{total_amount:,}**")
 
-
-
         # 提供下載功能
         csv = summary.to_csv(index=False, encoding="utf-8-sig")
         st.download_button(
@@ -39,7 +39,6 @@ if uploaded_file is not None:
             file_name="查詢結果.csv",
             mime="text/csv",
         )
-
 
 
 
