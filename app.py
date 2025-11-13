@@ -22,7 +22,7 @@ if uploaded_file is not None:
         detail.insert(0, "序號", range(1, len(detail) + 1))
 
         st.write("🔴 查詢結果（逐筆明細）：")
-        st.dataframe(detail)
+        st.dataframe(detail.set_index("序號"))
 
        # 加總：依藥品名稱分組
         summary = result.groupby("藥品名稱", as_index=False)["使用量"].sum()
@@ -52,5 +52,6 @@ if uploaded_file is not None:
             file_name="累計查詢結果.csv",
             mime="text/csv",
         )
+
 
 
