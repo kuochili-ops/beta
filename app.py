@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.title("2024 健保申報藥品數量查詢介面（正式版）")
+st.title("2024 健保申報藥品數量查詢介面（初代測試機）")
 
 # 直接讀取同目錄下的 CSV 檔案
 df = pd.read_csv("pay2024(UTF-8).csv", encoding="utf-8")
@@ -41,3 +41,4 @@ if keyword:
         file_name="累計查詢結果.csv",
         mime="text/csv",
     )
+
