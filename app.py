@@ -26,13 +26,10 @@ if keyword:
     summary.rename(columns={"使用量": "累計總量"}, inplace=True)
     summary["累計總量"] = summary["累計總量"].round(1)
     summary.insert(0, "序號", range(1, len(summary) + 1))
-    st.write("✅ 查詢結果（藥品名稱累計）：")
+    st.write("✅ 查詢結果（同藥品名稱規格累計）：")
     st.dataframe(summary.set_index("序號"))
 
-    # 顯示所有規格合計
-    total_amount = summary["累計總量"].sum()
-    st.write(f"📊 主成分『{keyword}』的所有規格總使用量為：**{total_amount:,.1f}**")
-
+    
     # 提供下載功能
     csv = summary.to_csv(index=False, encoding="utf-8-sig")
     st.download_button(
@@ -41,4 +38,5 @@ if keyword:
         file_name="累計查詢結果.csv",
         mime="text/csv",
     )
+
 
