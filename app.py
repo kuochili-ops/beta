@@ -109,4 +109,5 @@ if keyword:
         company_summary["百分比"] = (company_summary["累計總金額"] / total_company_amount * 100).round(1)
 
         company_summary = company_summary[["藥商", "累計總金額", "百分比"]].copy()
-        company_summary.insert(0, "序號", range(1, len(company_summary
+        company_summary.insert(0, "序號", range(1, len(company_summary)
+
