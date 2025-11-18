@@ -82,13 +82,11 @@ if keyword:
         st.dataframe(detail, hide_index=True)
         st.caption(f"共 {len(detail)} 筆")
 
-        # ✅ 藥品同名稱累計表格（移除支付價，增加百分比）
-        summary = result.groupby("藥品名稱", as_index=False).agg(
-            {"使用量": "sum", "支付價": "mean"}
+        # ✅ 藥品同名稱累計表格（總金額以逐筆總金額加總）
+        summary = detail.groupby("藥品名稱", as_index=False).agg(
+            {"使用量": "sum", "總金額": "sum"}
         )
-        summary.rename(columns={"使用量": "累計總量"}, inplace=True)
-        summary["累計總量"] = summary["累計總量"].round(1)
-        summary["累計總金額"] = (summary["累計總量"] * summary["支付價"]).round(1)
+        summary.rename(columns={"使用量": "累計總量", "總金額": "累計總金額"}, inplace=True)
 
         total_amount = summary["累計總金額"].sum()
         summary["百分比"] = (summary["累計總金額"] / total_amount * 100).round(1)
@@ -102,34 +100,13 @@ if keyword:
         st.caption(f"共 {len(summary)} 筆")
 
         # 🏢 藥商累計總金額表格（只顯示藥商、總金額、百分比）
-        company_summary = result.groupby("藥商", as_index=False).agg(
-            {"使用量": "sum", "支付價": "mean"}
+        company_summary = detail.groupby("藥商", as_index=False).agg(
+            {"總金額": "sum"}
         )
-        company_summary["累計總金額"] = (company_summary["使用量"] * company_summary["支付價"]).round(1)
+        company_summary.rename(columns={"總金額": "累計總金額"}, inplace=True)
 
         total_company_amount = company_summary["累計總金額"].sum()
         company_summary["百分比"] = (company_summary["累計總金額"] / total_company_amount * 100).round(1)
 
         company_summary = company_summary[["藥商", "累計總金額", "百分比"]].copy()
-        company_summary.insert(0, "序號", range(1, len(company_summary) + 1))
-        company_summary = company_summary.reset_index(drop=True)
-
-        st.write("🏢 查詢結果（藥商累計總金額）：")
-        st.dataframe(company_summary, hide_index=True)
-        st.caption(f"共 {len(company_summary)} 家藥商")
-
-        # ⬇️ 提供下載功能（下載藥品累計結果）
-        csv = summary.to_csv(index=False, encoding="utf-8-sig")
-        file_name = f"{normalized}_累計查詢結果.csv"
-        st.download_button(
-            label="下載累計查詢結果 CSV",
-            data=csv,
-            file_name=file_name,
-            mime="text/csv",
-        )
-else:
-    st.info("請輸入主成分以進行查詢")
-
-# 🖼️ 郵票圖片
-stamp = Image.open("white6_stamp.jpg")
-st.image(stamp, caption="白六航空 壹圓 郵票", width=90)
+        company_summary.insert(0, "序號", range(1, len(company_summary
