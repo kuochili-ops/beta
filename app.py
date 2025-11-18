@@ -95,19 +95,4 @@ if keyword:
         summary.insert(0, "序號", range(1, len(summary) + 1))
         summary = summary.reset_index(drop=True)
 
-        st.write("✅ 查詢結果（藥品同名稱累計）：")
-        st.dataframe(summary, hide_index=True)
-        st.caption(f"共 {len(summary)} 筆")
-
-        # 🏢 藥商累計總金額表格（只顯示藥商、總金額、百分比）
-        company_summary = detail.groupby("藥商", as_index=False).agg(
-            {"總金額": "sum"}
-        )
-        company_summary.rename(columns={"總金額": "累計總金額"}, inplace=True)
-
-        total_company_amount = company_summary["累計總金額"].sum()
-        company_summary["百分比"] = (company_summary["累計總金額"] / total_company_amount * 100).round(1)
-
-        company_summary = company_summary[["藥商", "累計總金額", "百分比"]].copy()
-        company_summary.insert(0, "序號", range(1, len(company_summary)
-
+        st.write
